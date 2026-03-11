@@ -1,0 +1,1 @@
+# Celery app initialization removed for simplified setup

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tickets - Movie Ticket Booking</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+</head>
+<body>
+    <!-- Dark Mode Toggle -->
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1>🎬 Movie Ticket Booking</h1>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <span id="authLinks">
+                <a href="/login/" class="nav-link">Login</a>
+                <a href="/register/" class="nav-link">Register</a>
+            </span>
+            <span id="userLinks" style="display: none;">
+                <span id="userName" class="nav-link"></span>
+                <a href="/payment-history/" class="nav-link">History</a>
+                <a href="#" id="logoutBtn" class="nav-link">Logout</a>
+            </span>
+        </div>
+    </nav>
+
+    <!-- Selected Movie Info -->
+    <div class="movie-selection-section">
+        <h2>Selected Movie</h2>
+        <div class="selected-movie-container" id="selectedMovieContainer">
+            <div class="selected-movie-card" id="selectedMovieCard">
+                <img id="selectedMovieImage" src="" alt="Movie Poster" class="selected-movie-poster">
+                <div class="selected-movie-info">
+                    <h3 id="selectedMovieTitle">No movie selected</h3>
+                    <p class="price">₹<span id="selectedMoviePrice">0</span></p>
+                </div>
+            </div>
+            <a href="/" class="btn btn-secondary change-movie-btn">Change Movie</a>
+        </div>
+    </div>
+
+    <!-- Seat Selection -->
+    <div class="container" id="seatContainer">
+        <div class="screen">SCREEN</div>
+
+        <div class="row">
+            <div class="seat" data-seat-id="0" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="1" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="2" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="3" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="4" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="5" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="6" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="7" onclick="selectSeat(this)"></div>
+        </div>
+        <div class="row">
+            <div class="seat" data-seat-id="8" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="9" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="10" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="11" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="12" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="13" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="14" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="15" onclick="selectSeat(this)"></div>
+        </div>
+        <div class="row">
+            <div class="seat" data-seat-id="16" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="17" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="18" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="19" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="20" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="21" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="22" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="23" onclick="selectSeat(this)"></div>
+        </div>
+        <div class="row">
+            <div class="seat" data-seat-id="24" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="25" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="26" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="27" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="28" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="29" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="30" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="31" onclick="selectSeat(this)"></div>
+        </div>
+        <div class="row">
+            <div class="seat" data-seat-id="32" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="33" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="34" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="35" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="36" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="37" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="38" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="39" onclick="selectSeat(this)"></div>
+        </div>
+        <div class="row">
+            <div class="seat" data-seat-id="40" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="41" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="42" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="43" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="44" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="45" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="46" onclick="selectSeat(this)"></div>
+            <div class="seat" data-seat-id="47" onclick="selectSeat(this)"></div>
+        </div>
+    </div>
+
+    <!-- Showcase -->
+    <ul class="showcase" id="showcase">
+        <li>
+            <div class="seat"></div>
+            <small>Available</small>
+        </li>
+        <li>
+            <div class="seat selected"></div>
+            <small>Selected</small>
+        </li>
+        <li>
+            <div class="seat occupied"></div>
+            <small>Occupied</small>
+        </li>
+    </ul>
+
+    <!-- Text and Button -->
+    <p class="text">
+        <span id="count">0</span> seats for a price of ₹<span id="total">0</span>
+    </p>
+
+<div class="cta">
+        <button class="purchase_btn" id="purchaseBtn" onclick="handlePurchaseClick()">Purchase Your Tickets</button>
+    </div>
+
+    <!-- Payment Status -->
+    <div id="paymentStatus" class="payment-status" style="display: none;"></div>
+
+    <!-- Customer Info Modal -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <h2>Customer Information</h2>
+            <form id="customerForm">
+                <div class="form-group">
+                    <label for="modalFirstName">First Name *</label>
+                    <input type="text" id="modalFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalLastName">Last Name *</label>
+                    <input type="text" id="modalLastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalEmail">Email *</label>
+                    <input type="email" id="modalEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalPhone">Phone *</label>
+                    <input type="tel" id="modalPhone" required>
+                </div>
+<div class="modal-buttons">
+                    <button type="button" id="cancelBtn" class="btn btn-secondary" onclick="closeCustomerModal()">Cancel</button>
+                    <button type="button" id="proceedBtn" class="btn btn-primary" onclick="handleProceedToPayment()">Confirm & Select Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<!-- Payment Method Modal -->
+    <div id="paymentMethodModal" class="modal">
+        <div class="modal-content">
+            <h2>Select Payment Method</h2>
+            <div class="payment-methods">
+                <div class="payment-option" data-method="card" onclick="selectPaymentMethod('card')">
+                    <div class="payment-icon">💳</div>
+                    <h3>Card</h3>
+                    <p>Pay with Debit/Credit Card</p>
+                </div>
+                <div class="payment-option" data-method="upi" onclick="selectPaymentMethod('upi')">
+                    <div class="payment-icon">📱</div>
+                    <h3>UPI</h3>
+                    <p>Pay via UPI App</p>
+                </div>
+                <div class="payment-option" data-method="cash" onclick="selectPaymentMethod('cash')">
+                    <div class="payment-icon">💵</div>
+                    <h3>Cash</h3>
+                    <p>Pay at Counter</p>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" id="cancelPaymentMethodBtn" class="btn btn-secondary" onclick="closePaymentMethodModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPI QR Modal -->
+    <div id="upiModal" class="modal">
+        <div class="modal-content">
+            <h2>UPI Payment</h2>
+            <div class="upi-details">
+                <img id="qrCodeImage" src="" alt="UPI QR Code" style="max-width: 200px; display: none;">
+                <div class="detail-item">
+                    <span class="detail-label">Reference:</span>
+                    <span class="detail-value" id="upiReference"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Amount:</span>
+                    <span class="detail-value" id="upiAmount"></span>
+                </div>
+                <p style="margin-top: 15px; color: #666;">Scan the QR code using your UPI app to complete payment</p>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" id="cancelUpiBtn" class="btn btn-secondary">Cancel</button>
+                <button type="button" id="confirmUpiBtn" class="btn btn-primary">I've Completed Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cash Payment Modal -->
+    <div id="cashModal" class="modal">
+        <div class="modal-content">
+            <h2>Cash Booking Confirmed</h2>
+            <div class="confirmation-details">
+                <div class="detail-item">
+                    <span class="detail-label">Booking Reference:</span>
+                    <span class="detail-value" id="cashReference"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Amount:</span>
+                    <span class="detail-value" id="cashAmount"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Number of Seats:</span>
+                    <span class="detail-value" id="cashSeats"></span>
+                </div>
+            </div>
+            <p style="margin-top: 15px; color: #666;">Please visit the cinema counter to complete your payment and collect your tickets.</p>
+            <div class="modal-buttons">
+                <button type="button" id="completeCashBtn" class="btn btn-primary">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Styles -->
+    <style>
+        .selected-movie-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .selected-movie-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        body.dark-mode .selected-movie-card {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .selected-movie-poster {
+            width: 120px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .selected-movie-info {
+            text-align: left;
+        }
+
+        .selected-movie-info h3 {
+            color: #fff;
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .selected-movie-info .price {
+            color: #4db8ff;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .change-movie-btn {
+            padding: 12px 25px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .navbar {
+            width: 100%;
+            background: var(--navbar-gradient);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar h1 {
+            color: white;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #555;
+            border: 2px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+
+        .payment-status {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 8px;
+            background: #4caf50;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            animation: fadeIn 0.3s;
+        }
+
+        .payment-status.error {
+            background: #f44336;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        .upi-details {
+            text-align: center;
+        }
+
+        .upi-details img {
+            margin: 20px 0;
+        }
+    </style>
+
+    <script src="/static/backend.js"></script>
+    <script>
+        // Global function to select/deselect seats
+        function selectSeat(seatElement) {
+            if (seatElement.classList.contains('occupied')) {
+                return; // Can't select occupied seats
+            }
+            
+            // Toggle the selected class
+            seatElement.classList.toggle('selected');
+            
+            // Update localStorage with selected seat indices
+            const allSeats = document.querySelectorAll('.row .seat');
+            const selectedSeats = document.querySelectorAll('.row .seat.selected');
+            
+            const seatsIndex = [...selectedSeats].map(seat => [...allSeats].indexOf(seat));
+            localStorage.setItem('selectedSeats', JSON.stringify(seatsIndex));
+            
+            // Update the price display
+            if (typeof updateDisplayPrice === 'function') {
+                updateDisplayPrice();
+            }
+            
+            console.log('Seat clicked:', seatElement.dataset.seatId, 'Selected:', seatElement.classList.contains('selected'));
+        }
+
+        // Dark mode toggle functionality
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.querySelector('.dark-mode-toggle');
+            if (document.body.classList.contains('dark-mode')) {
+                btn.textContent = '☀️';
+            } else {
+                btn.textContent = '🌙';
+            }
+        }
+
+        // Initialize selected movie from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedMovieTitle = localStorage.getItem('selectedMovieTitle');
+            const selectedMoviePrice = localStorage.getItem('selectedMoviePrice');
+            const selectedMovieImage = localStorage.getItem('selectedMovieImage');
+
+            const titleEl = document.getElementById('selectedMovieTitle');
+            const priceEl = document.getElementById('selectedMoviePrice');
+            const imageEl = document.getElementById('selectedMovieImage');
+
+            if (selectedMovieTitle) {
+                titleEl.textContent = selectedMovieTitle;
+            }
+            if (selectedMoviePrice) {
+                priceEl.textContent = selectedMoviePrice;
+            }
+            if (selectedMovieImage) {
+                imageEl.src = selectedMovieImage;
+                imageEl.style.display = 'block';
+            } else {
+                imageEl.style.display = 'none';
+            }
+
+            // Initialize price display
+            if (typeof updateDisplayPrice === 'function') {
+                updateDisplayPrice();
+            }
+            
+            // Initial seat refresh
+            if (typeof refreshSeat === 'function') {
+                refreshSeat();
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn')?.addEventListener('click', async function(e) {
+            e.preventDefault();
+            try {
+                const response = await fetch('/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    localStorage.clear();
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        });
+
+        // Check auth on page load
+        async function checkAuth() {
+            try {
+                const response = await fetch('/user-info/');
+                const data = await response.json();
+                
+                const authLinks = document.getElementById('authLinks');
+                const userLinks = document.getElementById('userLinks');
+                const userName = document.getElementById('userName');
+                
+                if (data.authenticated) {
+                    authLinks.style.display = 'none';
+                    userLinks.style.display = 'flex';
+                    userName.textContent = data.name || data.phone;
+                } else {
+                    authLinks.style.display = 'flex';
+                    userLinks.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+            }
+        }
+
+// Run auth check on load
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+// Handle purchase button click
+        function handlePurchaseClick() {
+            const seat_list = JSON.parse(localStorage.getItem("selectedSeats"));
+            
+            if (seat_list === null || seat_list.length === 0) {
+                // Show error message
+                const statusDiv = document.getElementById('paymentStatus');
+                if (statusDiv) {
+                    statusDiv.textContent = 'Please select at least one seat';
+                    statusDiv.className = 'payment-status error';
+                    statusDiv.style.display = 'block';
+                    setTimeout(() => {
+                        statusDiv.style.display = 'none';
+                    }, 3000);
+                }
+                return;
+            }
+            
+            // Show modal for customer info
+            const customerModal = document.getElementById('customerModal');
+            if (customerModal) {
+                customerModal.style.display = 'block';
+            }
+        }
+        
+        // Close customer modal
+        function closeCustomerModal() {
+            const customerModal = document.getElementById('customerModal');
+            if (customerModal) {
+                customerModal.style.display = 'none';
+            }
+        }
+        
+// Handle proceed to payment
+        async function handleProceedToPayment() {
+            const first_name = document.getElementById('modalFirstName').value.trim();
+            const last_name = document.getElementById('modalLastName').value.trim();
+            const email = document.getElementById('modalEmail').value.trim();
+            const phone = document.getElementById('modalPhone').value.trim();
+            
+            if (!first_name || !last_name || !email || !phone) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            const selectedMovieTitle = localStorage.getItem('selectedMovieTitle');
+            if (!selectedMovieTitle) {
+                alert('Please select a movie');
+                return;
+            }
+            
+            const seat_list = JSON.parse(localStorage.getItem("selectedSeats"));
+            if (seat_list === null || seat_list.length === 0) {
+                alert('Please select at least one seat');
+                return;
+            }
+            
+            // Close customer modal and show payment method selection
+            const customerModal = document.getElementById('customerModal');
+            if (customerModal) customerModal.style.display = 'none';
+            
+            const paymentMethodModal = document.getElementById('paymentMethodModal');
+            if (paymentMethodModal) paymentMethodModal.style.display = 'block';
+        }
+        
+        // Close payment method modal
+        function closePaymentMethodModal() {
+            const paymentMethodModal = document.getElementById('paymentMethodModal');
+            if (paymentMethodModal) {
+                paymentMethodModal.style.display = 'none';
+            }
+        }
+        
+        // Select payment method and process payment
+        async function selectPaymentMethod(paymentMethod) {
+            const first_name = document.getElementById('modalFirstName').value.trim();
+            const last_name = document.getElementById('modalLastName').value.trim();
+            const email = document.getElementById('modalEmail').value.trim();
+            const phone = document.getElementById('modalPhone').value.trim();
+            const movie_title = localStorage.getItem('selectedMovieTitle');
+            const seat_list = JSON.parse(localStorage.getItem("selectedSeats"));
+            
+            const data = {
+                movie_title,
+                seat_list,
+                first_name,
+                last_name,
+                email,
+                phone,
+                payment_method: paymentMethod
+            };
+            
+            try {
+                const res = await fetch("/payment/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await res.json();
+                
+                // Close payment method modal
+                const paymentMethodModal = document.getElementById('paymentMethodModal');
+                if (paymentMethodModal) paymentMethodModal.style.display = 'none';
+                
+                if (paymentMethod === 'card') {
+                    if (result.payment_url) {
+                        window.location.href = result.payment_url;
+                    } else if (result.test_mode) {
+                        window.location.href = result.confirm_url;
+                    } else {
+                        alert('Error: ' + (result.error || 'Failed to process payment'));
+                    }
+                } else if (paymentMethod === 'upi') {
+                    if (result.booking_reference && result.total_amount) {
+                        const qrRes = await fetch("/generate-upi-qr/", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                booking_reference: result.booking_reference,
+                                total_amount: result.total_amount,
+                                phone: phone
+                            })
+                        });
+                        const qrData = await qrRes.json();
+                        
+                        const qrCodeImg = document.getElementById('qrCodeImage');
+                        const upiRef = document.getElementById('upiReference');
+                        const upiAmt = document.getElementById('upiAmount');
+                        const upiModal = document.getElementById('upiModal');
+                        
+                        if (qrCodeImg && upiRef && upiAmt && qrData.qr_code) {
+                            qrCodeImg.src = qrData.qr_code;
+                            qrCodeImg.style.display = 'block';
+                            upiRef.textContent = result.booking_reference;
+                            upiAmt.textContent = '₹' + result.total_amount;
+                            if (upiModal) upiModal.style.display = 'block';
+                        }
+                    }
+                } else if (paymentMethod === 'cash') {
+                    if (result.booking_reference && result.total_amount) {
+                        const cashRef = document.getElementById('cashReference');
+                        const cashAmt = document.getElementById('cashAmount');
+                        const cashSeats = document.getElementById('cashSeats');
+                        const cashModal = document.getElementById('cashModal');
+                        
+                        if (cashRef && cashAmt && cashSeats) {
+                            cashRef.textContent = result.booking_reference;
+                            cashAmt.textContent = '₹' + result.total_amount;
+                            cashSeats.textContent = seat_list.length;
+                        }
+                        
+                        // Clear selected seats
+                        localStorage.setItem('selectedSeats', JSON.stringify([]));
+                        localStorage.setItem('selectedMoviePrice', '');
+                        localStorage.setItem('selectedMovieTitle', '');
+                        
+                        if (cashModal) cashModal.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                alert('Error: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>
+
