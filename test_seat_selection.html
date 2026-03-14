@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Seat Selection</title>
+    <style>
+        .seat { width:30px; height:30px; background:#444; margin:5px; cursor:pointer; display:inline-block; }
+        .seat:hover { background:#6feaf6; }
+        .seat.selected { background:#4db8ff; }
+        .seat.occupied { background:#ff6b6b; cursor:not-allowed; }
+        #status { margin:20px 0; font-family:monospace; }
+    </style>
+</head>
+<body>
+    <h1>Test Seat Selection</h1>
+    <div id="seats">
+        <div class="seat" data-id="1" onclick="selectSeat(this)">1</div>
+        <div class="seat" data-id="2" onclick="selectSeat(this)">2</div>
+        <div class="seat occupied" data-id="3" onclick="selectSeat(this)">3</div>
+        <div class="seat" data-id="4" onclick="selectSeat(this)">4</div>
+    </div>
+    <div id="status">Click seats. Console (F12) shows logs.</div>
+    
+    <script>
+        function selectSeat(el) {
+            console.log('selectSeat called:', el.dataset.id);
+            if (el.classList.contains('occupied')) {
+                console.log('Occupied, ignored');
+                return;
+            }
+            el.classList.toggle('selected');
+            document.getElementById('status').innerHTML = 'Selected: ' + Array.from(document.querySelectorAll('.seat.selected')).map(s=>s.dataset.id).join(',') + '<br>Console for full logs';
+        }
+    </script>
+</body>
+</html>
+

@@ -155,7 +155,7 @@
         <span id="count">0</span> seats for a price of ₹<span id="total">0</span>
     </p>
 
-    <div class="cta" id="ctaContainer" style="display: none;">
+<div class="cta" id="ctaContainer" style="display: none;">
         <button class="purchase_btn" id="purchaseBtn">Purchase Your Tickets</button>
     </div>
 
@@ -459,154 +459,51 @@
 
     <script src="/static/backend.js"></script>
     <script src="/static/script.js"></script>
-    <script>
-        // Global function to select/deselect seats - works as fallback for seat click handling
-        function selectSeat(seatElement) {
-            if (seatElement.classList.contains('occupied')) {
-                return; // Can't select occupied seats
-            }
-            
-            // Toggle the selected class
-            seatElement.classList.toggle('selected');
-            
-            // Update localStorage with selected seat indices
-            const allSeats = document.querySelectorAll('.row .seat');
-            const selectedSeats = document.querySelectorAll('.row .seat.selected');
-            
-            const seatsIndex = [...selectedSeats].map(seat => [...allSeats].indexOf(seat));
-            localStorage.setItem('selectedSeats', JSON.stringify(seatsIndex));
-            
-            // Update the price display
-            if (typeof updateDisplayPrice === 'function') {
-                updateDisplayPrice();
-            }
-            
-            console.log('Seat clicked:', seatElement.dataset.seatId, 'Selected:', seatElement.classList.contains('selected'));
-        }
 
-        // Dark mode toggle functionality
-        function toggleDarkMode() {
+    <script>
+        // Dark mode toggle
+        window.toggleDarkMode = function() {
             document.body.classList.toggle('dark-mode');
             const btn = document.querySelector('.dark-mode-toggle');
-            if (document.body.classList.contains('dark-mode')) {
-                btn.textContent = '☀️';
-            } else {
-                btn.textContent = '🌙';
-            }
-        }
+            btn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        };
 
-        // Initialize movie gallery click handlers
-        document.addEventListener('DOMContentLoaded', function() {
-            const movieCards = document.querySelectorAll('.movie-card');
-            const seatContainer = document.getElementById('seatContainer');
-            const showcase = document.getElementById('showcase');
-            const priceText = document.getElementById('priceText');
-            const ctaContainer = document.getElementById('ctaContainer');
-            const movieDropdownContainer = document.getElementById('movieDropdownContainer');
-
-            // If no movie cards, show dropdown
-            if (movieCards.length === 0) {
-                movieDropdownContainer.style.display = 'block';
-            }
-
-            movieCards.forEach(card => {
-                card.addEventListener('click', function() {
-                    // Remove selected class from all cards
-                    movieCards.forEach(c => c.classList.remove('selected'));
-                    
-                    // Add selected class to clicked card
-                    this.classList.add('selected');
-                    
-                    // Get movie data
-                    selectedMovieTitle = this.dataset.movieTitle;
-                    selectedMoviePrice = parseInt(this.dataset.moviePrice);
-                    
-                    // Store in localStorage
-                    localStorage.setItem('selectedMovieTitle', selectedMovieTitle);
-                    localStorage.setItem('selectedMoviePrice', selectedMoviePrice);
-                    
-                    // Show seat selection
-                    seatContainer.style.display = 'block';
-                    showcase.style.display = 'flex';
-                    priceText.style.display = 'block';
-                    ctaContainer.style.display = 'block';
-                    
-                    // Refresh seats for selected movie
-                    if (typeof refreshSeat === 'function') {
-                        refreshSeat();
-                    }
-                    
-                    // Update price display for the selected movie
-                    if (typeof updateDisplayPrice === 'function') {
-                        updateDisplayPrice();
-                    }
-                });
-            });
-
-            // Update display price when seats are selected
-            if (typeof updateDisplayPrice === 'function') {
-                // Initial call
-                updateDisplayPrice();
-            }
-        });
-
-        // Logout functionality
-        document.getElementById('logoutBtn')?.addEventListener('click', async function(e) {
-            e.preventDefault();
-            try {
-                const response = await fetch('/logout/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await response.json();
-                if (data.success) {
-                    localStorage.clear();
-                    window.location.href = '/';
-                }
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
-        });
-
-        // Check auth on page load
-        async function checkAuth() {
-            try {
-                const response = await fetch('/user-info/');
-                const data = await response.json();
-                
-                const authLinks = document.getElementById('authLinks');
-                const userLinks = document.getElementById('userLinks');
-                const userName = document.getElementById('userName');
-                
-                if (data.authenticated) {
-                    authLinks.style.display = 'none';
-                    userLinks.style.display = 'flex';
-                    userName.textContent = data.name || data.phone;
-                } else {
-                    authLinks.style.display = 'flex';
-                    userLinks.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Auth check error:', error);
-            }
-        }
-
-// Run auth check on load
-        document.addEventListener('DOMContentLoaded', checkAuth);
-
-        // Function to proceed to booking page
-        function proceedToBooking(title, price, image) {
-            // Store movie details in localStorage
+        // Proceed to booking (movie cards)
+        window.proceedToBooking = function(title, price, image) {
             localStorage.setItem('selectedMovieTitle', title);
             localStorage.setItem('selectedMoviePrice', price);
             localStorage.setItem('selectedMovieImage', image);
             localStorage.setItem('selectedSeats', JSON.stringify([]));
-            
-            // Redirect to booking page
             window.location.href = '/booking/';
-        }
+        };
+
+        // Movie gallery clicks (delegated)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.movie-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    proceedToBooking(this.dataset.movieTitle, this.dataset.moviePrice, this.dataset.movieImage || '');
+                });
+            });
+
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    try {
+                        const res = await fetch('/logout/', { method: 'POST', headers: {'Content-Type': 'application/json'} });
+                        if ((await res.json()).success) {
+                            localStorage.clear();
+                            window.location.href = '/';
+                        }
+                    } catch (e) {
+                        console.error('Logout error:', e);
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>

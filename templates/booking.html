@@ -131,7 +131,7 @@
     </p>
 
 <div class="cta">
-        <button class="purchase_btn" id="purchaseBtn" onclick="handlePurchaseClick()">Purchase Your Tickets</button>
+        <button class="purchase_btn" id="purchaseBtn">Purchase Your Tickets</button>
     </div>
 
     <!-- Payment Status -->
@@ -470,288 +470,53 @@
     </style>
 
     <script src="/static/backend.js"></script>
-    <script>
-        // Global function to select/deselect seats
-        function selectSeat(seatElement) {
-            if (seatElement.classList.contains('occupied')) {
-                return; // Can't select occupied seats
-            }
-            
-            // Toggle the selected class
-            seatElement.classList.toggle('selected');
-            
-            // Update localStorage with selected seat indices
-            const allSeats = document.querySelectorAll('.row .seat');
-            const selectedSeats = document.querySelectorAll('.row .seat.selected');
-            
-            const seatsIndex = [...selectedSeats].map(seat => [...allSeats].indexOf(seat));
-            localStorage.setItem('selectedSeats', JSON.stringify(seatsIndex));
-            
-            // Update the price display
-            if (typeof updateDisplayPrice === 'function') {
-                updateDisplayPrice();
-            }
-            
-            console.log('Seat clicked:', seatElement.dataset.seatId, 'Selected:', seatElement.classList.contains('selected'));
-        }
 
-        // Dark mode toggle functionality
-        function toggleDarkMode() {
+    <script>
+        // Dark mode
+        window.toggleDarkMode = function() {
             document.body.classList.toggle('dark-mode');
             const btn = document.querySelector('.dark-mode-toggle');
-            if (document.body.classList.contains('dark-mode')) {
-                btn.textContent = '☀️';
-            } else {
-                btn.textContent = '🌙';
-            }
-        }
+            btn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        };
 
-        // Initialize selected movie from localStorage
+        // Init movie display & refresh
         document.addEventListener('DOMContentLoaded', function() {
-            const selectedMovieTitle = localStorage.getItem('selectedMovieTitle');
-            const selectedMoviePrice = localStorage.getItem('selectedMoviePrice');
-            const selectedMovieImage = localStorage.getItem('selectedMovieImage');
-
+            // Load movie info
             const titleEl = document.getElementById('selectedMovieTitle');
             const priceEl = document.getElementById('selectedMoviePrice');
             const imageEl = document.getElementById('selectedMovieImage');
+            const title = localStorage.getItem('selectedMovieTitle') || '';
+            const price = localStorage.getItem('selectedMoviePrice') || '0';
+            const img = localStorage.getItem('selectedMovieImage') || '';
 
-            if (selectedMovieTitle) {
-                titleEl.textContent = selectedMovieTitle;
-            }
-            if (selectedMoviePrice) {
-                priceEl.textContent = selectedMoviePrice;
-            }
-            if (selectedMovieImage) {
-                imageEl.src = selectedMovieImage;
+            titleEl.textContent = title || 'No movie selected';
+            priceEl.textContent = price;
+            if (img) {
+                imageEl.src = img;
                 imageEl.style.display = 'block';
             } else {
                 imageEl.style.display = 'none';
             }
 
-            // Initialize price display
-            if (typeof updateDisplayPrice === 'function') {
-                updateDisplayPrice();
-            }
-            
-            // Initial seat refresh
-            if (typeof refreshSeat === 'function') {
-                refreshSeat();
-            }
-        });
+            // Init refresh/price
+            setTimeout(() => {
+                if (typeof refreshSeat === 'function') refreshSeat();
+                if (typeof updateDisplayPrice === 'function') updateDisplayPrice();
+            }, 100);
 
-        // Logout functionality
-        document.getElementById('logoutBtn')?.addEventListener('click', async function(e) {
-            e.preventDefault();
-            try {
-                const response = await fetch('/logout/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) logoutBtn.onclick = async (e) => {
+                e.preventDefault();
+                try {
+                    const res = await fetch('/logout/', {method: 'POST', headers:{'Content-Type':'application/json'}});
+                    if ((await res.json()).success) {
+                        localStorage.clear();
+                        window.location.href = '/';
                     }
-                });
-                const data = await response.json();
-                if (data.success) {
-                    localStorage.clear();
-                    window.location.href = '/';
-                }
-            } catch (error) {
-                console.error('Logout error:', error);
-            }
-        });
-
-        // Check auth on page load
-        async function checkAuth() {
-            try {
-                const response = await fetch('/user-info/');
-                const data = await response.json();
-                
-                const authLinks = document.getElementById('authLinks');
-                const userLinks = document.getElementById('userLinks');
-                const userName = document.getElementById('userName');
-                
-                if (data.authenticated) {
-                    authLinks.style.display = 'none';
-                    userLinks.style.display = 'flex';
-                    userName.textContent = data.name || data.phone;
-                } else {
-                    authLinks.style.display = 'flex';
-                    userLinks.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Auth check error:', error);
-            }
-        }
-
-// Run auth check on load
-        document.addEventListener('DOMContentLoaded', checkAuth);
-
-// Handle purchase button click
-        function handlePurchaseClick() {
-            const seat_list = JSON.parse(localStorage.getItem("selectedSeats"));
-            
-            if (seat_list === null || seat_list.length === 0) {
-                // Show error message
-                const statusDiv = document.getElementById('paymentStatus');
-                if (statusDiv) {
-                    statusDiv.textContent = 'Please select at least one seat';
-                    statusDiv.className = 'payment-status error';
-                    statusDiv.style.display = 'block';
-                    setTimeout(() => {
-                        statusDiv.style.display = 'none';
-                    }, 3000);
-                }
-                return;
-            }
-            
-            // Show modal for customer info
-            const customerModal = document.getElementById('customerModal');
-            if (customerModal) {
-                customerModal.style.display = 'block';
-            }
-        }
-        
-        // Close customer modal
-        function closeCustomerModal() {
-            const customerModal = document.getElementById('customerModal');
-            if (customerModal) {
-                customerModal.style.display = 'none';
-            }
-        }
-        
-// Handle proceed to payment
-        async function handleProceedToPayment() {
-            const first_name = document.getElementById('modalFirstName').value.trim();
-            const last_name = document.getElementById('modalLastName').value.trim();
-            const email = document.getElementById('modalEmail').value.trim();
-            const phone = document.getElementById('modalPhone').value.trim();
-            
-            if (!first_name || !last_name || !email || !phone) {
-                alert('Please fill in all required fields');
-                return;
-            }
-            
-            const selectedMovieTitle = localStorage.getItem('selectedMovieTitle');
-            if (!selectedMovieTitle) {
-                alert('Please select a movie');
-                return;
-            }
-            
-            const seat_list = JSON.parse(localStorage.getItem("selectedSeats"));
-            if (seat_list === null || seat_list.length === 0) {
-                alert('Please select at least one seat');
-                return;
-            }
-            
-            // Close customer modal and show payment method selection
-            const customerModal = document.getElementById('customerModal');
-            if (customerModal) customerModal.style.display = 'none';
-            
-            const paymentMethodModal = document.getElementById('paymentMethodModal');
-            if (paymentMethodModal) paymentMethodModal.style.display = 'block';
-        }
-        
-        // Close payment method modal
-        function closePaymentMethodModal() {
-            const paymentMethodModal = document.getElementById('paymentMethodModal');
-            if (paymentMethodModal) {
-                paymentMethodModal.style.display = 'none';
-            }
-        }
-        
-        // Select payment method and process payment
-        async function selectPaymentMethod(paymentMethod) {
-            const first_name = document.getElementById('modalFirstName').value.trim();
-            const last_name = document.getElementById('modalLastName').value.trim();
-            const email = document.getElementById('modalEmail').value.trim();
-            const phone = document.getElementById('modalPhone').value.trim();
-            const movie_title = localStorage.getItem('selectedMovieTitle');
-            const seat_list = JSON.parse(localStorage.getItem("selectedSeats"));
-            
-            const data = {
-                movie_title,
-                seat_list,
-                first_name,
-                last_name,
-                email,
-                phone,
-                payment_method: paymentMethod
+                } catch(e) { console.error(e); }
             };
-            
-            try {
-                const res = await fetch("/payment/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                const result = await res.json();
-                
-                // Close payment method modal
-                const paymentMethodModal = document.getElementById('paymentMethodModal');
-                if (paymentMethodModal) paymentMethodModal.style.display = 'none';
-                
-                if (paymentMethod === 'card') {
-                    if (result.payment_url) {
-                        window.location.href = result.payment_url;
-                    } else if (result.test_mode) {
-                        window.location.href = result.confirm_url;
-                    } else {
-                        alert('Error: ' + (result.error || 'Failed to process payment'));
-                    }
-                } else if (paymentMethod === 'upi') {
-                    if (result.booking_reference && result.total_amount) {
-                        const qrRes = await fetch("/generate-upi-qr/", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                booking_reference: result.booking_reference,
-                                total_amount: result.total_amount,
-                                phone: phone
-                            })
-                        });
-                        const qrData = await qrRes.json();
-                        
-                        const qrCodeImg = document.getElementById('qrCodeImage');
-                        const upiRef = document.getElementById('upiReference');
-                        const upiAmt = document.getElementById('upiAmount');
-                        const upiModal = document.getElementById('upiModal');
-                        
-                        if (qrCodeImg && upiRef && upiAmt && qrData.qr_code) {
-                            qrCodeImg.src = qrData.qr_code;
-                            qrCodeImg.style.display = 'block';
-                            upiRef.textContent = result.booking_reference;
-                            upiAmt.textContent = '₹' + result.total_amount;
-                            if (upiModal) upiModal.style.display = 'block';
-                        }
-                    }
-                } else if (paymentMethod === 'cash') {
-                    if (result.booking_reference && result.total_amount) {
-                        const cashRef = document.getElementById('cashReference');
-                        const cashAmt = document.getElementById('cashAmount');
-                        const cashSeats = document.getElementById('cashSeats');
-                        const cashModal = document.getElementById('cashModal');
-                        
-                        if (cashRef && cashAmt && cashSeats) {
-                            cashRef.textContent = result.booking_reference;
-                            cashAmt.textContent = '₹' + result.total_amount;
-                            cashSeats.textContent = seat_list.length;
-                        }
-                        
-                        // Clear selected seats
-                        localStorage.setItem('selectedSeats', JSON.stringify([]));
-                        localStorage.setItem('selectedMoviePrice', '');
-                        localStorage.setItem('selectedMovieTitle', '');
-                        
-                        if (cashModal) cashModal.style.display = 'block';
-                    }
-                }
-            } catch (e) {
-                alert('Error: ' + e.message);
-            }
-        }
+        });
     </script>
 </body>
 </html>

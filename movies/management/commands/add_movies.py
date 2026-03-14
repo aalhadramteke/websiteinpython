@@ -15,7 +15,7 @@ class Command(BaseCommand):
         for movie_data in movies:
             movie, created = Movie.objects.get_or_create(
                 title=movie_data['title'],
-                defaults={'price': movie_data['price']}
+                defaults={'price': movie_data['Price']}
             )
             if created:
                 self.stdout.write(self.style.SUCCESS(f"Created movie: {movie.title}"))
@@ -23,3 +23,4 @@ class Command(BaseCommand):
                 self.stdout.write(f"Movie already exists: {movie.title}")
 
         self.stdout.write(self.style.SUCCESS('All movies have been added'))
+
