@@ -477,8 +477,23 @@
             window.location.href = '/booking/';
         };
 
-        // Movie gallery clicks (delegated)
-        document.addEventListener('DOMContentLoaded', function() {
+        // Navbar auth state + Movie gallery clicks
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Load user info and toggle navbar
+            try {
+                const response = await fetch('/user-info/');
+                const userData = await response.json();
+                if (userData.authenticated) {
+                    document.getElementById('authLinks').style.display = 'none';
+                    const userLinks = document.getElementById('userLinks');
+                    userLinks.style.display = 'flex';
+                    document.getElementById('userName').textContent = userData.name || userData.phone;
+                }
+            } catch (e) {
+                console.warn('User info load failed:', e);
+            }
+
+            // Movie gallery clicks
             document.querySelectorAll('.movie-card').forEach(card => {
                 card.addEventListener('click', function() {
                     document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('selected'));
@@ -487,22 +502,23 @@
                 });
             });
 
-            // Logout
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    try {
-                        const res = await fetch('/logout/', { method: 'POST', headers: {'Content-Type': 'application/json'} });
-                        if ((await res.json()).success) {
-                            localStorage.clear();
-                            window.location.href = '/';
-                        }
-                    } catch (e) {
-                        console.error('Logout error:', e);
+            // Logout handler (delegated)
+            document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
+                e.preventDefault();
+                try {
+                    const res = await fetch('/logout/', { 
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'} 
+                    });
+                    if ((await res.json()).success) {
+                        localStorage.clear();
+                        // Reload to show auth links
+                        window.location.reload();
                     }
-                });
-            }
+                } catch (e) {
+                    console.error('Logout error:', e);
+                }
+            });
         });
     </script>
 </body>
