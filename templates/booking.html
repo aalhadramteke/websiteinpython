@@ -131,8 +131,47 @@
     </p>
 
 <div class="cta">
-        <button class="purchase_btn" id="purchaseBtn">Purchase Your Tickets</button>
+        <button class="purchase_btn" id="purchaseBtn">🎫 PURCHASE YOUR TICKETS</button>
     </div>
+
+    <script>
+    async function handleSimpleCashBooking() {
+        const seat_list = JSON.parse(localStorage.getItem("selectedSeats") || "[]");
+        const movie_title = localStorage.getItem('selectedMovieTitle') || '';
+        const ticketPrice = +localStorage.getItem('selectedMoviePrice') || 0;
+        
+        if (seat_list.length === 0) return alert('Select seats first!');
+        if (!movie_title) return alert('Select movie first!');
+        
+        const first_name = prompt('First Name:') || 'Guest';
+        const phone = prompt('Phone:') || 'N/A';
+        
+        const formData = {
+            seat_list, movie_title, 
+            first_name, phone,
+            payment_method: 'cash'
+        };
+        
+        try {
+            const res = await fetch('/payment/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formData)
+            });
+            const data = await res.json();
+            
+            if (data.booking_reference) {
+                alert(`✅ Booked! Reference: ${data.booking_reference}\nPay ₹${data.total_amount} at counter`);
+                localStorage.removeItem('selectedSeats');
+                location.reload(); // Refresh seats
+            } else {
+                alert('Booking failed: ' + (data.error || 'Try again'));
+            }
+        } catch(e) {
+            alert('Error: ' + e.message);
+        }
+    }
+    </script>
 
     <!-- Payment Status -->
     <div id="paymentStatus" class="payment-status" style="display: none;"></div>

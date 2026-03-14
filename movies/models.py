@@ -69,7 +69,7 @@ class Payment(models.Model):
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='card')
     amount = models.IntegerField(default=0)  # Amount in cents or rupees
     upi_transaction_id = models.CharField(max_length=255, blank=True, null=True)  # UPI transaction reference
-    booking_reference = models.CharField(max_length=50, unique=True, blank=True, null=True)  # For cash/UPI booking reference
+    booking_reference = models.CharField(max_length=100, blank=True, null=True)  # Per-payment ref, no unique
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     

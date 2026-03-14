@@ -132,7 +132,8 @@ STATICFILES_DIRS=[
 
 
 # payment 
-PAYSTACK_SECRET=os.environ.get("PAYSTACK_SECRET", "")
+PAYSTACK_SECRET="sk_test_c7e54992a002b4b8f3d064f0a4d2b00082f0f1c5"  # Paystack test secret (DEV ONLY)
+PAYSTACK_PUBLIC="pk_test_4b44e1d4b1a5e32b73a1a6c9a4d8b4f8d4e5c1b0"  # Add public key for frontend if needed
 PAYSTACK_IP=["52.31.139.75", "52.49.173.169", "52.214.14.220"]
 
 
